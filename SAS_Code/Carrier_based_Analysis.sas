@@ -1,0 +1,117 @@
+DATA temp;
+set airplanes;
+speed =  Distance/Airtime ;
+if Origin = 'ATL' then or1 = 1;
+else or1 = 0;
+if Origin = 'LAX' then or2 = 1;
+else or2 = 0;
+if Origin = 'ORD' then or3 = 1;
+else or3 = 0;
+if Origin = 'DFW' then or4 = 1;
+else or4 = 0;
+if Origin = 'JFK' then or5 = 1;
+else or5 = 0;
+if Origin = 'DEN' then or6 = 1;
+else or6 = 0;
+if Origin = 'SFO' then or7 = 1;
+else or7 = 0;
+if Origin = 'CLT' then or8 = 1;
+else or8 = 0;
+if Origin = 'LAS' then or9 = 1;
+else or9 = 0;
+if Origin = 'IAH' then or10 = 1;
+else or10 = 0;
+if Dest = 'ATL' then de1 = 1;
+else de1 = 0;
+if Dest = 'LAX' then de2 = 1;
+else de2 = 0;
+if Dest = 'ORD' then de3 = 1;
+else de3 = 0;
+if Dest = 'DFW' then de4 = 1;
+else de4 = 0;
+if Dest = 'JFK' then de5 = 1;
+else de5 = 0;
+if Dest = 'DEN' then de6 = 1;
+else de6 = 0;
+if Dest = 'SFO' then de7 = 1;
+else de7 = 0;
+if Dest = 'CLT' then de8 = 1;
+else de8 = 0;
+if Dest = 'LAS' then de9 = 1;
+else de9 = 0;
+if Dest = 'IAH' then de10 = 1;
+else de10 = 0;
+if DayofWeek = 1  then day1= 1;
+else day1 = 0;
+if DayofWeek = 2  then day2= 1;
+else day2 = 0;
+if DayofWeek = 3  then day3= 1;
+else day3 = 0;
+if DayofWeek = 4  then day4= 1;
+else day4 = 0;
+if DayofWeek = 5  then day5= 1;
+else day5 = 0;
+if DayofWeek = 6  then day6= 1;
+else day6 = 0;
+if Month = 11  | Month = 12 | Month = 1 then winter =1;
+else winter = 0; 
+if Deptime >= 0 & Deptime < 600 then hr1 = 1;
+else hr1 = 0;
+if Deptime >=600 & Deptime <1200 then hr2 = 1;
+else hr2 = 0;
+if Deptime >=1200 & Deptime <1800 then hr3 =1;
+else hr3 = 0; 
+if Arrtime >= 0 & Arrtime < 600 then hr11 = 1;
+else hr11 = 0;
+if Arrtime >=600 & Arrtime <1200 then hr12 = 1;
+else hr12 = 0;
+if Arrtime >=1200 & Arrtime <1800 then hr13 =1;
+else hr13 = 0; 
+if UniqueCarrier = 'AA' then uc1 = 1;
+else uc1 = 0;
+if UniqueCarrier = 'DL' then uc2 = 1;
+else uc2 = 0;
+if UniqueCarrier = 'WN' then uc3 = 1;
+else uc3 = 0;
+if UniqueCarrier = 'UA' then uc4 = 1;
+else uc4 = 0;
+if UniqueCarrier = 'F9' then uc5 = 1;
+else uc5 = 0;
+run;
+
+TITLE "Without CarrierDelay";
+PROC REG plots= none;
+model ArrDelay = TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 weekend winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 LateAircraftDelay weatherDelay NASDelay SecurityDelay/stb vif collinoint;
+run;
+
+TITLE "Without  LateaircraftDelay";
+PROC REG plots= none;
+model ArrDelay = TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 weekend winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 CarrierDelay weatherDelay NASDelay SecurityDelay/stb vif collinoint;
+run;
+
+TITLE "Without SecurityDelay";
+PROC REG plots= none;
+model ArrDelay = TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 weekend winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 CarrierDelay weatherDelay NASDelay LateAircraftDelay /stb vif collinoint;
+run;
+
+TITLE "Without NASDelay";
+PROC REG plots= none;
+model ArrDelay = TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 weekend winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 CarrierDelay weatherDelay SecurityDelay LateAircraftDelay /stb vif collinoint;
+run;
+
+
+
+TITLE "Without WeatherDelay";
+PROC REG plots= none;
+model ArrDelay = TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 weekend winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 CarrierDelay NASDelay SecurityDelay LateAircraftDelay /stb vif collinoint;
+run;
+
+/* Distance and Airtime multicollinearity */
+TITLE "WITHOUT ALL";
+PROC REG plots = none;
+model ArrDelay = DepDelay TaxiIn Taxiout Distance Airtime or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 day1 day2 day3 day4 day5 day6 winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 /stb vif collinoint;
+run;
+
+TITLE "WITHOUT ALL";
+PROC REG plots = none;
+model ArrDelay = DepDelay TaxiIn Taxiout Speed or1 or2 or3 or4 or5 or6 or7 or8 or9 or10 de1 de2 de3 de4 de5 de6 de7 de8 de9 de10 day1 day2 day3 day4 day5 day6 winter hr1 hr2 hr3 hr11 hr12 hr13 uc1 uc2 uc3 uc4 uc5 /stb vif collinoint;
